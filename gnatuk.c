@@ -2,184 +2,227 @@
 #include <conio.h>
 #include <locale>
 #include<stdlib.h>
-#define MAX 100
 
-
-struct student
+char *gets_s(char *s, size_t buf_size)
 {
+    char *result;
+    result = fgets(s,buf_size,stdin);
+    result[strlen(s)-1] = '\0';
+    return result;
+}
+struct student
+ {
 char name[10];
 char surname[10];
 char patronymic[10];
 char facul[10];
 char specialty[10];
-char group[6];
-unsigned long int mark_1;
-unsigned long int mark_2;
-unsigned long int mark_3;
-} student_list[MAX];
+char group[6]; 
+int marks[50]; 
+int total_marks; 
+float pts;
+};
 
-void init_list(void), enter_list(void),show_list(void);
-int menu_select(void), find_free(void);
-int sort_function(const void *a,const void *b);
 
-int main()
-
+int enter_student(struct student *student_list, int max_number_of_students,int number_of_students);
+void show_list(struct student *student_list,int number_of_students);
+int menu_select(void);
+int sort();
+int sort_f(const void *a, const void *b);
+int sort_name(const void *, const void*);
+void clear_screen();
+int on_faculty(struct student student, char *facul);
+int is_premialist(struct student student);
+void print_student(struct student student,int number_of_students);
+float calculate ( struct student student);
+int main() 
 {
-/* eieoeaeecaoey ianneaa no?oeoo? */
-char choice;
-init_list();
-for(;;)
-{
-
-    choice = menu_select();
-    switch(choice)
-     {
-
-      case 1: enter_list();break;
-		  
-      case 2:show_list();break;
-		  
-      case 3: exit(0);break;
-       
-      }
-  }
-
-
-}
-
-/* Eieoeaeecaoey nienea. */
-void init_list(void)
-{
-  register int t;
-
-  for(t=0; t<MAX; ++t) student_list[t].name[0] = '\0';
-}
-
-
-/* Iieo?aiey cia?aiey, aua?aiiiai a iai?. */
-int menu_select(void)
-{
-  char s[80];
-  int c;
- 
-  printf("1. Enter a list of students\n");
-  printf("2. Show the list of students who need to give the prize\n");
-  printf("3. Exit\n");
-
-
- do {
-    printf("\nEnter the number of the desired item\n");
-    gets_s(s);
-    c = atoi(s);
-  } while(c<0 || c>3);
- system("cls");
-  return c;
-}
-
-
-/* Aaia aa?ana a nienie. */
-void enter_list(void)
-{
-   system("cls");
-  int slot,i,j;
-  char s[80];
- 
-  for(i=0;i<30;i++)
-  {
-	   slot = find_free();
-  if(slot==-1) {
-    printf("\nlist is full");
-	return;}
-  printf("Enter the namô of the student: ");
-  gets_s(student_list[slot].name);
- 
-  printf("Enter the surname of the student: ");
-  gets_s(student_list[slot].surname);
-
-  printf("Enter the patronymic: ");
-  gets_s(student_list[slot].patronymic);
-
-  printf("Enter the name of the faculty student: ");
-  gets_s(student_list[slot].facul);
-
-  printf("Enter the name of the specialty student: ");
-  gets_s(student_list[slot].specialty);
-
-   printf("Enter a group of student: ");
-   gets_s(student_list[slot].group);
-
-   printf("Enter the first assessment: ");
-   gets_s(s);
-   student_list[slot].mark_1=strtoul(s, '\0', 10);
-   
-   printf("Enter the second assessment of students: ");
-   gets_s(s);
-  student_list[slot].mark_2=strtoul(s, '\0', 10);
-  
-  printf("Enter the third assessment of student: ");
-  gets_s(s);
-  student_list[slot].mark_3=strtoul(s, '\0', 10);
-  system("cls");
-  printf("vi hotite prodolshenie spolnenia inform o students?\n");
-  
-	  printf("1 - yes\n2 - no\n");
-	  scanf_s("%d",&j);
-	 system("cls");
-	  if(j==2)
-		  break;
-
-		  
-
-  } return;
-}
-
-/* Iiene naiaiaiie no?oeoo?u. */
-int find_free(void)
-{
-  register int t;
-
-  for(t=0; student_list[t].name[0] && t<MAX; ++t) ;
-
-  if(t==MAX) return -1; /* naiaiaiuo no?oeoo? iao */
-  return t;
-}
-
-
-/* Auaia nienea ia ye?ai. */
-void show_list(void)
-{
-int slot = find_free();
-  if(slot==-1)
-slot==MAX;
-  
-int t;
-  for(t=0; t<10; ++t)
-  {
-      if(( student_list[t].mark_1>3)&&(student_list[t].mark_2>3 )&&(student_list[t].mark_3>3 ))
-      {
-          printf("%s\n",student_list[t].surname);
-          printf("%s\n",student_list[t].facul);
-}
-
-  }
-  
- getch();
- system("cls");
- 
-}
-
-int sort_function(const char *a,const char *b)
-{
-
-   return(strcmp(a,b));
-}
-int sort()
-{
-	int a,i;
 	
-	int slot = find_free();
-    if(slot==-1)
-    slot==MAX;
-	qsort(student_list[0].facul,slot-1,sizeof(int),sort_function);
+	const int max_number_of_students = 150;
+    struct student students_list[max_number_of_students];
+    int number_of_students=25;
+    char choice;
+    while(1) 
+	{
+		choice = menu_select();
+        switch (choice) 
+		{
+		case 1:
+			number_of_students=enter_student(students_list, number_of_students, max_number_of_students);break;
+        case 2: 
+			qsort(students_list, number_of_students, sizeof(struct student), sort_f);
+            show_list(students_list, number_of_students);break; 
+	   case 3:
+            exit(0);break; 
+
+	   }
+
+   }
+}
+
+float calculate ( struct student student)
+{
+	int sum = 0,i = 0;
+	float pts = 0;
+	for( i = 0; i<=5;i++)
+	{
+		while(student.marks[i]!=0)
+			sum+=student.marks[i];
+	}
+	    student.pts = sum/(i+1);
+	return student.pts;
+}
+void clear_screen()
+{
+#ifdef __WIN32
+    system("cls");
+#else
+    system("clear");
+#endif
+} 
+
+
+int menu_select(void) 
+{
+	const int buf_size = 80;
+    char s[buf_size];
+    int c;
+ 
+     printf("1. Enter a list of students\n");
+     printf("2. Show the list of students who need to give the prize\n");
+     printf("3. Exit\n");
+	 do {
+		 printf("\nEnter the number of the desired item\n");
+		 gets_s(s,buf_size);
+         c = atoi(s);}
+	 while (c < 0 || c > 3); 
+	     clear_screen();
+     return c; 
 
 }
+
+int enter_student(struct student *student_list, int max_number_of_students,int number_of_students)
+{
+	int i, j;
+    const int input_buffer_size = 80;
+	const int name_size=10;
+	const int surname_size=10;
+	const int facul_size=10;
+	const int patronymic_size=10;
+	const int specialty_size=10;
+	const int group_size=6;
+    char input_buffer[input_buffer_size];
+    char *strtoul_end_ptr;
+	int max_marks=5;
+	const int buf_size=80;	
+	char s[buf_size];
+	number_of_students=0;
+	max_number_of_students=0;
+
+
+    if(number_of_students > max_number_of_students){
+		printf("Max number of students (%d) reached", max_number_of_students);
+        return number_of_students;
+    }
+    clear_screen();
+    i =number_of_students;
+ 
+     printf("Enter the name of the student: "); 
+	 gets_s(student_list[i].name, name_size);
+
+     printf("Enter the surname of the student: "); 
+	 gets_s(student_list[i].surname, surname_size);
+
+	 printf("Enter the patronymic: ");
+     gets_s(student_list[i].patronymic,patronymic_size);
+
+	 printf("Enter the name of the faculty student:");
+	 gets_s(student_list[i].facul,facul_size);
+ 
+     printf("Enter the name of the specialty student: ");
+     gets_s(student_list[i].specialty,specialty_size);
+ 
+     printf("Enter a group of student: ");
+     gets_s(student_list[i].group,group_size);
+	 
+	 for(j = 0; j < max_marks; j++)
+	 {
+		 printf("Enter mark number %d:\n",j);
+         gets_s(input_buffer, input_buffer_size);
+         student_list[i].marks[j] = strtoul(s, &strtoul_end_ptr, 10);
+			if(*strtoul_end_ptr)
+			{
+				 printf("Wrong mark, try again.\n");
+					j--;
+             continue;
+			}
+		calculate(student_list[i]);
+	 }
+	 return (number_of_students)+1; 
+	  	
+}
+
+
+int on_faculty(struct student student, char *facul)
+{
+	return strcmp(student.facul, facul); 
+
+}
+
+
+int is_premialist(struct student *student_list) 
+{
+    int i;
+		for(i = 0; i< student_list[i].total_marks; i++) 
+			{
+				if(student_list[i].pts < 4)
+					return 0;
+			}
+
+		return 1;
+} 
+
+
+
+void show_list(struct student *student_list, int number_of_students)
+{
+    int i, j,number_of_faculties;
+	char* facul;
+	int	student=0;
+    for(i = 0; i < number_of_faculties; i++)
+	{
+		facul = student_list[i].facul;   
+        printf("Faculty %s:\n",facul);
+        printf("Premialists:\n");
+			for(j = 0; j < number_of_students; j++) 
+			{
+				if(on_faculty(student_list[j],facul) && is_premialist(student_list[j]))
+					print_student(student_list[j],number_of_students);
+			}
+	}
+
+	
+        printf("Everyone else:\n");
+			for(j = 0; j < number_of_students; j++) 
+			{
+				if(on_faculty(student_list[j], facul) && !is_premialist(student_list[j]))
+					print_student(student_list[j],number_of_students);
+            }
+}
+	
+
+
+void print_student( struct student* student_list,int number_of_students)
+{
+	int i;
+		for(i = 0; i< number_of_students; i++) 
+	
+	printf("%s\n",student_list[i].surname);
+}
+
+int sort_f(const void *a, const void *b)
+ {
+    const struct student *k = (const struct student *) a;
+   const struct student *m = (const struct student *) b;
+     return (strcmp(k->facul, m->facul));
+ } 
