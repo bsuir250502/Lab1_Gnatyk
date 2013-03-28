@@ -1,0 +1,11 @@
+*.vcxproj*
+*.sln
+*.sdf
+*.opensdf
+*.cmake
+main.dir/
+Debug
+CMakeCache.txt
+CMakeFiles/
+Win32/
+Makefile
