@@ -5,6 +5,8 @@ extern "C" {
 #include <stdlib.h>
 #include <string.h>
 #define input_buf_size 80
+#define SIZE( x ) (sizeof( x )/sizeof( *x ))
+
 
 char *gets_s(char *s, size_t buf_size)
 {
@@ -65,29 +67,28 @@ int faculty_exists(student * student_list, int number_of_students,char *faculty)
 
 int enter_student(struct student *student_list,int number_of_students,int max_number_of_students)
 {
-    int i, j;
-  
-    const int name_size = 10;
-    const int surname_size = 10;
-    const int facul_size = 10;
-    const int patronymic_size = 10;
-    const int specialty_size = 10;
-    const int group_size = 6;
+    int j;
+ 
     char input_buffer[input_buf_size];
     char *strtoul_end_ptr;
     int max_marks = 5;
     char s[input_buf_size];
-   
+	int name_size = SIZE (student_list[number_of_students].name);
+	int surname_size = SIZE(student_list[number_of_students].surname);
+	int patronymic_size = SIZE(student_list[number_of_students].patronymic);
+	int facul_size = SIZE(student_list[number_of_students].facul);
+	int specialty_size = SIZE(student_list[number_of_students].specialty);
+    int group_size = SIZE(student_list[number_of_students].group);
+     
     
     if (number_of_students > max_number_of_students) {
         printf("Max number of students (%d) reached",max_number_of_students);
         return number_of_students;
     }
     clear_screen();
-    number_of_students;
-
+   
     printf("Enter the name of the student: ");
-    gets_s(student_list[number_of_students].name, name_size);
+    gets_s(student_list[number_of_students].name,name_size);
 
     printf("Enter the surname of the student: ");
     gets_s(student_list[number_of_students].surname, surname_size);
@@ -98,8 +99,8 @@ int enter_student(struct student *student_list,int number_of_students,int max_nu
     printf("Enter the name of the faculty:");
 
     gets_s(student_list[number_of_students].facul, facul_size);
-    if (!faculty_exists(student_list, number_of_students, student_list[number_of_students].facul))
-        faculty_count++;
+    if(!faculty_exists(student_list, number_of_students, student_list[number_of_students].facul))
+	{faculty_count++;}
 
     printf("Enter the name of the specialty student: ");
     gets_s(student_list[number_of_students].specialty, specialty_size);
