@@ -121,13 +121,6 @@ int enter_student(struct student *student_list,int number_of_students,int max_nu
 }
 
 
-int on_faculty(struct student student, char *facul)
-{
-    return strcmp(student.facul, facul);
-
-}
-
-
 int is_premialist(student current_student)
 {
     int i;
@@ -136,8 +129,7 @@ int is_premialist(student current_student)
             return 0;
 		}
     }
-
-    return 1;
+  return 1;
 }
 
 
@@ -145,25 +137,29 @@ int is_premialist(student current_student)
 void show_list(struct student *student_list, int number_of_students)
 {
     int i, j;
-	for (i = 0; i < faculty_count; i++) {
-		printf("Faculty %s:\n", student_list[i].facul);
-        printf("Premialists:\n");
-        for (j = 0; j < number_of_students; j++) {
-             //(on_faculty(student_list[j], student_list[i].facul)) &&)//
-				if (is_premialist(student_list[j])){ 
+	for(i = 0; i < number_of_students; i++){
+		if(i==0){
+			printf("Faculty %s:\n", student_list[i].facul);
+            printf("Premialists:\n");
+		}
+		else{
+			if((strcmp(student_list[i].facul,student_list[i-1].facul)!=0)){
+				printf("Faculty %s:\n", student_list[i].facul);
+                printf("Premialists:\n");
+			}
+		}
+        for(j = 0; j < number_of_students; j++) {
+			if((strcmp(student_list[i].facul,student_list[i-1].facul)==0))
+				break;
+            if((strcmp(student_list[j].facul,student_list[i].facul)==0)){
+				if (is_premialist(student_list[j])){
 					printf("%s\n", student_list[j].surname);
 				}
-               else{
-				   printf("Everyone else:\n");
-                   printf("%s\n", student_list[j].surname);
-			   }
+			}
 		}
 	}
 }
 
-	
-
- 
 int sort_f(const void *a, const void *b)
 {
     const struct student *k = (const struct student *) a;
