@@ -37,6 +37,7 @@ void clear_screen()
 #endif
 }
 int faculty_count=0;
+
 int menu_select(void)
 {
     char s[input_buf_size];
@@ -45,12 +46,13 @@ int menu_select(void)
     printf("1. Enter a list of students\n");
     printf("2. display a list of standouts\n");
     printf("3. Exit\n");
+	printf("4. Help\n");
     do {
         printf("\nEnter the number of the desired item\n");
         gets_s(s, input_buf_size);
         c = atoi(s);
     }
-    while (c < 0 || c > 3);
+    while (c < 0 || c > 4);
     clear_screen();
     return c;
 
@@ -62,9 +64,9 @@ int i ;
     for (i = 0; i < number_of_students; i++){
         if (!strcmp(faculty, student_list[i].facul)){
             return 1;
-		}
+        }
     return 0;
-	}
+    }
 }
 
 int enter_student(struct student *student_list,int number_of_students,int max_number_of_students)
@@ -89,25 +91,18 @@ int enter_student(struct student *student_list,int number_of_students,int max_nu
     clear_screen();
     printf("Enter the name of the student: ");
     gets_s(student_list[number_of_students].name,name_size);
-
     printf("Enter the surname of the student: ");
     gets_s(student_list[number_of_students].surname, surname_size);
-
     printf("Enter the patronymic: ");
     gets_s(student_list[number_of_students].patronymic, patronymic_size);
-
     printf("Enter the name of the faculty:");
-
     gets_s(student_list[number_of_students].facul, facul_size);
     if(!faculty_exists(student_list, number_of_students, student_list[number_of_students].facul))
      {faculty_count++;}
-
     printf("Enter the name of the specialty student: ");
     gets_s(student_list[number_of_students].specialty, specialty_size);
-
     printf("Enter a group of student: ");
     gets_s(student_list[number_of_students].group, group_size);
-
     student_list[number_of_students].total_marks = max_marks;
     
     for (j = 0; j < max_marks; j++) {
@@ -120,44 +115,41 @@ int enter_student(struct student *student_list,int number_of_students,int max_nu
 
 }
 
-
 int is_premialist(student current_student)
 {
     int i;
     for (i = 0; i <5; i++) {
         if (current_student.marks[i] < 4){
             return 0;
-		}
+        }
     }
   return 1;
 }
 
-
-
 void show_list(struct student *student_list, int number_of_students)
 {
     int i, j;
-	for(i = 0; i < number_of_students; i++){
-		if(i==0){
-			printf("Faculty %s:\n", student_list[i].facul);
+    for(i = 0; i < number_of_students; i++){
+        if(i==0){
+            printf("Faculty %s:\n", student_list[i].facul);
             printf("Premialists:\n");
-		}
-		else{
-			if((strcmp(student_list[i].facul,student_list[i-1].facul)!=0)){
-				printf("Faculty %s:\n", student_list[i].facul);
+        }
+        else{
+            if((strcmp(student_list[i].facul,student_list[i-1].facul)!=0)){
+                printf("Faculty %s:\n", student_list[i].facul);
                 printf("Premialists:\n");
-			}
-		}
+            }
+        }
         for(j = 0; j < number_of_students; j++) {
-			if((strcmp(student_list[i].facul,student_list[i-1].facul)==0))
-				break;
+            if((strcmp(student_list[i].facul,student_list[i-1].facul)==0))
+                break;
             if((strcmp(student_list[j].facul,student_list[i].facul)==0)){
-				if (is_premialist(student_list[j])){
-					printf("%s\n", student_list[j].surname);
-				}
-			}
-		}
-	}
+                if (is_premialist(student_list[j])){
+                    printf("%s\n", student_list[j].surname);
+                }
+            }
+        }
+    }
 }
 
 int sort_f(const void *a, const void *b)
@@ -167,10 +159,25 @@ int sort_f(const void *a, const void *b)
     return (strcmp(k->facul, m->facul));
 }
 
-
-int main()
+void checkHelp(void)
 {
-int number_of_students=0;
+     printf
+        ("=============================================================================================================\n"
+         "MANUAL:\n"
+         "Enter information about the students: name,surname,patronymic, name of the faculty,name of the specialty, \n"
+         "=================================OPTIONS=====================================================================\n"
+         "1. Enter a list of students\n"
+         "2. display a list of standouts\n"
+         "3. Exit\n"
+		 "4. Help\n"
+         "=============================================================================================================\n");
+    exit(0);
+	
+}
+
+int main(int argc, char *argv[])
+{
+	int number_of_students=0;
     struct student students_list[150];
     char choice;
     while (1) {
@@ -186,10 +193,13 @@ int number_of_students=0;
         case 3:
             exit(0);
             break;
-
+		case 4:
+			checkHelp();
+			break;
         }
     }
 }
+
 #ifdef __cplusplus
 }
 #endif
